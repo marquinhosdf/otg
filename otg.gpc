@@ -122,6 +122,10 @@ const int8   PressBtns[]         = { -1,  PS4_TRIANGLE,PS4_DOWN, PS4_UP, PS4_LEF
 
 // Profiles Variable
 int ProfileIdx;
+// Indices in Misc[] for "Primary", "Secondary", and "Sidearm"
+const uint8 ProfileStrIdx[] = {9,10,11};
+// LED color slot to use for each profile
+const uint8 ProfileLedIdx[] = {0,1,2};
 
 define ProfilesActive      = TRUE;         // Change This To FALSE; If You Don't Want To Use Profiles \\
 define ProfileButton       = PS4_TRIANGLE; // Change From Profile 1 to Profile 2 \\
@@ -284,7 +288,7 @@ main {
             cls_oled(OLED_BLACK);  // Clear The OLED Display \\
             rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); // Display The Rectangle Around The Text \\
             //line_oled(0, 27, OLED_WIDTH - 1, 27, 1, OLED_WHITE); // Display The Line In Between Text Top/Bottom \\
-            led(ProfileIdx); // Different Led Colour Based On Which Profile You Are Using \\
+            led(get_profile_led_idx()); // Different Led Colour Based On Which Profile You Are Using \\
             
             if(EditMenu){  // If EditMenu Display The Editable Mods \\
                 printf(center_x(get_valName_chars(ValNameIdx), OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,ValNames[ValNameIdx]);
@@ -301,12 +305,7 @@ main {
                     print(center_x(get_WepName_chars(WeaponNameIdx), OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM_HEIGHT),OLED_FONT_MEDIUM,OLED_WHITE,WeaponName[WeaponNameIdx]);
                 }
 
-            if(ProfileIdx == 0)
-                printf(center_x(get_misc_chars(9), OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,Misc[9]);
-               else if(ProfileIdx == 1)
-                printf(center_x(get_misc_chars(10), OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,Misc[10]);
-            else if(ProfileIdx == 2)
-                printf(center_x(get_misc_chars(11), OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,Misc[11]);
+            printf(center_x(get_misc_chars(get_profile_misc_idx()), OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,Misc[get_profile_misc_idx()]);
             }
             Toggle = FALSE;
             DisplayMenu = FALSE;
@@ -320,23 +319,11 @@ main {
 
                 cls_oled(OLED_BLACK);  // Clear OLED Display \\
                 rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); // Display The Rectangle Around The Text
-                led(ProfileIdx); // Different Led Colour Based On Which Profile You Are Using \\
+                led(get_profile_led_idx()); // Different Led Colour Based On Which Profile You Are Using \\
                 // Display The Correct Profile ON The Display Title Screen \\
-                if(ProfileIdx == 0){
-                    printf(center_x(get_misc_chars(9), OLED_FONT_MEDIUM_WIDTH),0,OLED_FONT_MEDIUM,OLED_WHITE,Misc[9]);
-                    WeaponNameIdx = Mod2[ProfileIdx]
-                    print(center_x(get_WepName_chars(WeaponNameIdx), OLED_FONT_MEDIUM_WIDTH),30,OLED_FONT_MEDIUM,OLED_WHITE,WeaponName[WeaponNameIdx]);
-                    }
-                   else if(ProfileIdx == 1){
-                       WeaponNameIdx = Mod2[ProfileIdx]
-                    printf(center_x(get_misc_chars(10), OLED_FONT_MEDIUM_WIDTH),0,OLED_FONT_MEDIUM,OLED_WHITE,Misc[10]);
-                    print(center_x(get_WepName_chars(WeaponNameIdx), OLED_FONT_MEDIUM_WIDTH),30,OLED_FONT_MEDIUM,OLED_WHITE,WeaponName[WeaponNameIdx]);
-                    }
-                else if(ProfileIdx == 2){
-                       WeaponNameIdx = Mod2[ProfileIdx]
-                    printf(center_x(get_misc_chars(11), OLED_FONT_MEDIUM_WIDTH),0,OLED_FONT_MEDIUM,OLED_WHITE,Misc[11]);
-                    print(center_x(get_WepName_chars(WeaponNameIdx), OLED_FONT_MEDIUM_WIDTH),30,OLED_FONT_MEDIUM,OLED_WHITE,WeaponName[WeaponNameIdx]);
-                    }
+                WeaponNameIdx = Mod2[ProfileIdx];
+                printf(center_x(get_misc_chars(get_profile_misc_idx()), OLED_FONT_MEDIUM_WIDTH),0,OLED_FONT_MEDIUM,OLED_WHITE,Misc[get_profile_misc_idx()]);
+                print(center_x(get_WepName_chars(WeaponNameIdx), OLED_FONT_MEDIUM_WIDTH),30,OLED_FONT_MEDIUM,OLED_WHITE,WeaponName[WeaponNameIdx]);
                 
                 DisplayTitle = FALSE;
                 ScreenSaver  = TRUE;
@@ -638,12 +625,7 @@ function DisplayQuickToggles() {
     line_oled(0, 27, OLED_WIDTH - 1, 27, 1, OLED_WHITE);
     printf(center_x(get_modName_chars(ModNameIdx), OLED_FONT_MEDIUM_WIDTH),5,OLED_FONT_MEDIUM,OLED_WHITE,ModNames[ModNameIdx]);
             
-    if(ProfileIdx == 0)
-        printf(center_x(get_misc_chars(9), OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Misc[9]);
-    else if(ProfileIdx == 1)
-        printf(center_x(get_misc_chars(10), OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Misc[10]);
-    else if(ProfileIdx == 2)
-        printf(center_x(get_misc_chars(11), OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Misc[11]);
+    printf(center_x(get_misc_chars(get_profile_misc_idx()), OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Misc[get_profile_misc_idx()]);
     
 }
 function ButtonActivation(i,f_name,f_idx){
@@ -733,7 +715,7 @@ set_rumble(RUMBLE_B, 50);
 wait(150);
 reset_rumble();
 reset_leds();
-led(ProfileIdx);
+led(get_profile_led_idx());
 }
 combo RumbleOff {                       
 set_ledx(1, 1);
@@ -742,7 +724,7 @@ wait(300);
 reset_rumble();
 wait(400);
 reset_leds();
-led(ProfileIdx);
+led(get_profile_led_idx());
 }
 combo KillSwitch {
 cls_oled(OLED_BLACK);
@@ -827,6 +809,14 @@ function save_vals(WeaponNameIdx) {
     mem_slot_v2 = mem_start_val2 + WeaponNameIdx
     set_pvar(mem_slot_v1,Val1[WeaponNameIdx]);
     set_pvar(mem_slot_v2,Val2[WeaponNameIdx]);
+}
+
+function get_profile_misc_idx() {
+    return ProfileStrIdx[ProfileIdx];
+}
+
+function get_profile_led_idx() {
+    return ProfileLedIdx[ProfileIdx];
 }
 
 function number_to_string(value,f_digits){
