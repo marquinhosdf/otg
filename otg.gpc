@@ -102,10 +102,6 @@ const int8  WepToCat[][] = {{0,5,0},{6,10,1},{11,13,2},{14,15,3},{16,17,4},{18,1
 // WeapToCat[][]               0       1         2         3          4        5         6
 // WeapToCat[][]     {start_idx, end_idx, Category_idx}
 
-const int8  ScopeRecoil[][] = {{0,5,0},{6,10,1},{11,13,2},{14,15,3},{16,17,4},{18,19,5},{20,22,6}};
-// ScopeRecoil[][]                   0       1         2         3          4        5         6
-// ScopeRecoil[][]     {recoil_y, recoil_x}
-
 // This for editable values in the script for Edit Menu, change the values \\
 const string ValNames[]       = { "Recoil Y","Recoil X",""};
 // ValName Number 
